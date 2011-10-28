@@ -1,0 +1,53 @@
+body {
+	background-color: #ffffff;
+}
+
+div.card {
+	height: 65px;
+	background-color: blue;
+	width: 100px;
+	z-index: 5;
+	position: absolute;
+	top: 50px;
+	left: 15px;
+	color: white;
+	text-align: center;
+	border: 0.1em solid gray;
+	-webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)
+}
+
+#menuArea {
+	height: 30px;
+	width: 30%;
+	float: left;
+}
+#notificationArea {
+	height: 30px;
+	width: 30%;
+	margin-right: 0px;
+	border: 1px solid blue;
+	float: right;
+	text-align: center;
+}
+
+tr.columns > td {
+	border: 0.1em solid gray;
+	width: 200px;
+	-webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+#testElement2 {
+	top: 150px;
+	left: 150px;
+}
+
+#testElement3 {
+	top: 50px;
+	left: 100px;
+}
+
+#console {
+	top:200px;
+	left:100px;
+	background-color: blue;
+}
