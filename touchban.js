@@ -56,6 +56,32 @@ function getProjectStates(project) {
 }
 
 function setupBoard(columns) {
+	board = document.getElementById('board');
+	board.innerHTML = '';
+	left = 10;
+	for (c in columns) {
+		for (color in columns[c]) {
+			var head = document.createElement('div');
+			head.innerHTML = c;
+			head.style.backgroundColor = color;
+			head.setAttribute('class', 'header')
+			head.style.position = "absolute";
+			head.style.left = left + "px";
+			board.appendChild(head);
+		}
+		sep = document.createElement('div');
+		sep.setAttribute('style', 'clear: both;');
+		board.appendChild(sep);
+		col = document.createElement('div');
+		col.setAttribute('class', 'column');
+		col.style.left = left + "px";
+		board.appendChild(col);
+		left += 225;
+		addColumnInfo(col);
+	}
+}
+
+function _setupBoard(columns) {
 	cabeceras = document.getElementById('boardHeaders');
 	columnas = document.getElementById('boardColumns');
 	cabeceras.innerHTML = '';
@@ -65,6 +91,7 @@ function setupBoard(columns) {
 			var head = document.createElement('th');
 			head.innerHTML = c;
 			head.style.backgroundColor = color;
+			head.style.width = "150px";
 			cabeceras.appendChild(head);
 		}
 		var col = document.createElement('td');
@@ -92,12 +119,14 @@ function findDropColumn(left, top) {
 function loadCardsOnDocument(doc) {
 	colors = ['red','green','blue','pink','yellow'];
 	for (i=0; i<20; i++) {
-		var div = doc.createElement('div');
-		div.setAttribute('id', 'card_'+i);
-		div.setAttribute('class', 'card');
-		div.innerHTML = 'card_'+i;
-		div.style.backgroundColor = colors[i%colors.length];
-		doc.body.appendChild(div);
+		var card = doc.createElement('div');
+		card.setAttribute('id', 'card_'+i);
+		card.setAttribute('class', 'card');
+		card.innerHTML = 'card_'+i;
+		card.style.backgroundColor = colors[i%colors.length];
+		doc.body.appendChild(card);
+		card.style.top = 50*i + "px";
+		console.log("TOP: " + card.style.top);
 	}
 }
 
@@ -113,6 +142,7 @@ function startDrag(e) {
 		this.onmousedown = null;
 		this.ontouchmove = moveDrag;
 		this.ontouchend = endDrag;
+		e.target.setAttribute('class', 'cardfloat');
 	} else {
 		document.onmousemove = moveDrag;
 		document.onmouseup = function () {
@@ -138,6 +168,8 @@ function startDrag(e) {
 		// console.log("endDrag - " +this.id + "->" + this.style.left + ":" + this.style.top);
 		console.log("Dropped in " + findDropColumn(this.style.left, this.style.top).id);
 		notificate("Changed status of " + e.target.id + " to '" + findDropColumn(this.style.left, this.style.top).id + "'");
+		e.target.setAttribute('class', 'card');
+		e.target.zIndex = z;
 		//alert(findDropColumn(this.style.left, this.style.top).id);
 	}
 }

@@ -2,18 +2,22 @@ body {
 	background-color: #ffffff;
 }
 
-div.card {
+div.card, div.cardfloat {
 	height: 65px;
 	background-color: blue;
 	width: 100px;
 	z-index: 5;
 	position: absolute;
 	top: 50px;
-	left: 15px;
+	left: 150px;
 	color: white;
 	text-align: center;
 	border: 0.1em solid gray;
-	-webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5)
+}
+
+div.cardfloat {
+	-webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+	z-index: 9999;
 }
 
 #menuArea {
@@ -32,8 +36,22 @@ div.card {
 
 tr.columns > td {
 	border: 0.1em solid gray;
-	width: 200px;
 	-webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+div.column {
+	position: absolute;
+	top: 50px;
+	width: 220px;
+	height: 1000px;
+	-webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);	
+}
+
+div.header {
+	width: 220px;
+	font-family: Helvetica;
+	font-weight: bold;
+	-webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);		
 }
 
 #testElement2 {
