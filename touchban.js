@@ -17,12 +17,7 @@ function setupProject() {
 	var project = list.options[list.selectedIndex].text;
 	setupBoard(getProjectStates(project));
 	removeCardsFromDocument(document);
-	loadCardsOnDocument(document);
-
-	cards = document.getElementsByClassName('card');
-	for (i=0; i<cards.length; i++) {
-		cards[i].onmousedown = cards[i].ontouchstart = startDrag;
-	}
+	putCardsOnDocument(getProjectCards(project), document);
 }
 
 function setupKanbanProjectsList(projects) {
@@ -53,6 +48,31 @@ function getProjectStates(project) {
 				'Done':{'green':10}
 			};
 	}
+}
+
+var projectCards = {};
+function getProjectCards(project) {
+	cards = projectCards[project];
+	if (!cards) {
+		projectCards[project] = cards = loadCardsForProject(project);
+	}
+	return cards;
+}
+
+function loadCardsForProject(project) {
+	console.log('Loading cards for project "' + project + '"')
+	if (project == 'ticketBisMto') {
+		return [{id:100, text:"Uno"},
+		     {id:103, text:"Otro"},
+		     {id:105, text:"Una más, esta con texto largo, y con pocas probabilidades de caber en el espacio"}
+		   ];
+	}
+	if (project == 'Rene') {
+		return [{id:109, text:"René #1"},
+		     {id:123, text:"René #234"},
+		     {id:145, text:"René #sdsf"}
+		     ];
+	}	
 }
 
 function setupBoard(columns) {
@@ -116,32 +136,39 @@ function findDropColumn(left, top) {
 	return columnInfo[pre];
 }
 
-function loadCardsOnDocument(doc) {
+function putCardsOnDocument(cards, doc) {
 	colors = ['red','green','blue','pink','yellow'];
-	for (i=0; i<20; i++) {
+	for (c in cards) {
 		var card = doc.createElement('div');
-		card.setAttribute('id', 'card_'+i);
 		card.setAttribute('class', 'card');
-		card.innerHTML = 'card_'+i;
-		card.style.backgroundColor = colors[i%colors.length];
+		card.setAttribute('id', cards[c].id)
+		card.innerHTML = cards[c].text;
+		card.style.backgroundColor = colors[c%colors.length];
 		doc.body.appendChild(card);
-		card.style.top = 50*i + "px";
-		console.log("TOP: " + card.style.top);
+		card.style.top = 50*c + "px";
 	}
+	makeCardsMovable(doc);
+}
+
+function makeCardsMovable(doc) {
+	cards = document.getElementsByClassName('card');
+	for (i=0; i<cards.length; i++) {
+		cards[i].onmousedown = cards[i].ontouchstart = startDrag;
+	}	
 }
 
 function removeCardsFromDocument(doc) {
-	// for (var c=0; c<cards.length; c++) {
-	// 	console.log("Deleting..." + cards[c]);
-	// 	doc.body.removeChild(cards[c]);
-	// }
+	cards = document.getElementsByClassName('card');
+	for (var c=cards.length-1; c >= 0; c--) {
+		doc.body.removeChild(cards[c]);
+ 	}
 }
 
 function startDrag(e) {
-	if (e.type === 'touchstart') {
+	if (e.type === 'touchstart' || e.type === 'mousedown') {
 		this.onmousedown = null;
-		this.ontouchmove = moveDrag;
-		this.ontouchend = endDrag;
+		this.onmousemove = this.ontouchmove = moveDrag;
+		this.onmouseup = this.ontouchend = endDrag;
 		e.target.setAttribute('class', 'cardfloat');
 	} else {
 		document.onmousemove = moveDrag;
@@ -165,12 +192,11 @@ function startDrag(e) {
 	}
 
 	function endDrag(e) {
-		// console.log("endDrag - " +this.id + "->" + this.style.left + ":" + this.style.top);
+		this.onmousemove = null;
+		this.onmousedown = startDrag;
 		console.log("Dropped in " + findDropColumn(this.style.left, this.style.top).id);
 		notificate("Changed status of " + e.target.id + " to '" + findDropColumn(this.style.left, this.style.top).id + "'");
 		e.target.setAttribute('class', 'card');
-		e.target.zIndex = z;
-		//alert(findDropColumn(this.style.left, this.style.top).id);
 	}
 }
 
